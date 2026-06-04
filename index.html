@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NabtahAI | نبتة AI</title>
+  <meta name="description" content="نبتة AI منصة ذكية لمساعدة المزارعين على تشخيص أمراض النباتات، متابعة المحاصيل، واتخاذ قرارات زراعية أسرع وأكثر دقة." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#14532d',
+            secondary: '#16a34a',
+            accent: '#f59e0b',
+            cream: '#f8faf7',
+            dark: '#0f172a'
+          },
+          boxShadow: {
+            soft: '0 20px 45px rgba(20, 83, 45, 0.12)',
+            glow: '0 25px 60px rgba(22, 163, 74, 0.18)',
+            premium: '0 30px 80px rgba(15, 23, 42, 0.16)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .glass { background: rgba(255,255,255,0.74); backdrop-filter: blur(16px); }
+    .hero-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(20,83,45,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      pointer-events: none;
+    }
+    .waitlist-panel {
+      transition: opacity 320ms ease, transform 320ms ease, max-height 420ms ease, margin 320ms ease, padding 320ms ease;
+      transform-origin: top center;
+      overflow: hidden;
+    }
+    .waitlist-panel-hidden {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+      max-height: 0;
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      pointer-events: none;
+    }
+    .waitlist-panel-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      max-height: 420px;
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased selection:bg-green-100 selection:text-primary">
+  <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/85 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="#" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-lg font-black text-white shadow-soft">ن</div>
+        <div>
+          <p class="text-lg font-extrabold tracking-tight text-primary">NabtahAI</p>
+          <p class="text-xs text-slate-500" data-i18n="brandSub">نبتة AI</p>
+        </div>
+      </a>
+      <div class="flex items-center gap-3">
+        <nav class="hidden items-center gap-7 md:flex">
+          <a href="#features" class="text-sm font-medium text-slate-600 transition hover:text-primary" data-i18n="navFeatures">المزايا</a>
+          <a href="#how" class="text-sm font-medium text-slate-600 transition hover:text-primary" data-i18n="navHow">كيف تعمل</a>
+          <a href="#pricing" class="text-sm font-medium text-slate-600 transition hover:text-primary" data-i18n="navPricing">الباقات</a>
+          <a href="#testimonials" class="text-sm font-medium text-slate-600 transition hover:text-primary" data-i18n="navTestimonials">الآراء</a>
+          <a href="#faq" class="text-sm font-medium text-slate-600 transition hover:text-primary" data-i18n="navFaq">الأسئلة الشائعة</a>
+        </nav>
+        <button id="langToggle" type="button" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-primary hover:text-primary">EN</button>
+        <a href="#waitlist" class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:bg-secondary" data-i18n="joinWaitlist">انضم لقائمة الانتظار</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-grid relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-amber-50">
+      <div class="absolute inset-0 opacity-70">
+        <div class="absolute -right-20 top-0 h-72 w-72 rounded-full bg-green-200 blur-3xl"></div>
+        <div class="absolute -left-10 bottom-0 h-80 w-80 rounded-full bg-amber-200 blur-3xl"></div>
+      </div>
+      <div class="relative mx-auto grid max-w-7xl gap-14 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-24">
+        <div id="heroText" class="flex flex-col justify-center text-center lg:text-right">
+          <span class="mx-auto mb-5 inline-flex w-fit items-center rounded-full border border-green-200 bg-white px-4 py-1.5 text-sm font-semibold text-primary shadow-sm lg:mx-0" data-i18n="heroBadge">الزراعة الذكية تبدأ من قرار أدق</span>
+          <h1 class="text-4xl font-black leading-tight text-slate-900 sm:text-5xl lg:text-6xl xl:text-7xl">
+            NabtahAI
+            <span class="mt-2 block text-primary" data-i18n="heroTitle">مساعدك الزراعي الذكي لتشخيص المحاصيل واتخاذ القرار بثقة</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl" data-i18n="heroDesc">منصة عربية مدعومة بالذكاء الاصطناعي تساعد المزارعين والمهندسين الزراعيين على اكتشاف أمراض النباتات، تحليل الصور، وتقديم توصيات عملية بسرعة حتى في البيئات ذات الاتصال المحدود.</p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm" data-i18n="heroChip1">تشخيص أسرع</span>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm" data-i18n="heroChip2">قرارات أدق</span>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm" data-i18n="heroChip3">تكلفة أقل للخسائر</span>
+          </div>
+          <div id="heroActions" class="mt-8 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
+            <a href="#waitlist" class="rounded-full bg-primary px-7 py-3.5 text-base font-bold text-white shadow-soft transition hover:bg-secondary" data-i18n="heroPrimary">اطلب وصولاً مبكراً</a>
+            <a href="#pricing" class="rounded-full border border-slate-300 bg-white px-7 py-3.5 text-base font-bold text-slate-700 transition hover:border-primary hover:text-primary" data-i18n="heroSecondary">استعرض الباقات</a>
+          </div>
+          <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p class="text-2xl font-black text-primary">+90%</p>
+              <p class="mt-1 text-sm text-slate-500" data-i18n="stat1">دقة متوقعة في تحليل الحالات الشائعة</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p class="text-2xl font-black text-primary">24/7</p>
+              <p class="mt-1 text-sm text-slate-500" data-i18n="stat2">مساعدة مستمرة للمزارع في أي وقت</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p class="text-2xl font-black text-primary" data-i18n="stat3Title">عربي</p>
+              <p class="mt-1 text-sm text-slate-500" data-i18n="stat3">واجهة وتجربة مصممة لسياق المنطقة</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center">
+          <div class="glass w-full max-w-xl rounded-[32px] border border-white/70 p-5 shadow-premium">
+            <div class="rounded-[28px] bg-dark p-4 text-white">
+              <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <p class="text-sm text-green-300" data-i18n="panelLabel">لوحة التحليل الذكي</p>
+                  <h2 class="mt-1 text-xl font-bold" data-i18n="panelTitle">تشخيص سريع للمحصول</h2>
+                </div>
+                <span class="rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-300" data-i18n="panelStatus">نشط الآن</span>
+              </div>
+              <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl bg-white/5 p-4">
+                  <p class="text-sm text-slate-300" data-i18n="plantTypeLabel">نوع النبات</p>
+                  <p class="mt-2 text-lg font-bold" data-i18n="plantTypeValue">طماطم</p>
+                </div>
+                <div class="rounded-2xl bg-white/5 p-4">
+                  <p class="text-sm text-slate-300" data-i18n="diseaseLabel">الحالة المكتشفة</p>
+                  <p class="mt-2 text-lg font-bold text-amber-300" data-i18n="diseaseValue">تبقع مبكر</p>
+                </div>
+                <div class="rounded-2xl bg-white/5 p-4 sm:col-span-2">
+                  <p class="text-sm text-slate-300" data-i18n="recommendationLabel">التوصية</p>
+                  <p class="mt-2 leading-7 text-slate-100" data-i18n="recommendationValue">عزل الأوراق المتضررة، تقليل الري المسائي، ومتابعة برنامج علاج مخصص بناءً على شدة الإصابة وموقع المزرعة.</p>
+                </div>
+              </div>
+              <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl bg-gradient-to-r from-green-600 to-green-400 p-4 text-slate-900">
+                  <p class="text-sm font-semibold" data-i18n="confidenceLabel">مؤشر الثقة</p>
+                  <p class="mt-1 text-2xl font-black">92%</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-sm text-slate-300" data-i18n="responseTimeLabel">زمن الاستجابة</p>
+                  <p class="mt-1 text-2xl font-black text-green-300" data-i18n="responseTimeValue">أقل من 30 ثانية</p>
+                </div>
+              </div>
+              <div class="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p class="text-sm text-slate-300" data-i18n="roiLabel">الأثر المتوقع</p>
+                <p class="mt-2 text-lg font-bold text-white" data-i18n="roiValue">تقليل تأخر القرار الزراعي ورفع سرعة الاستجابة الميدانية.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <div class="grid gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-3">
+        <div>
+          <p class="text-sm font-semibold text-primary" data-i18n="trust1Title">مصمم للحقول الواقعية</p>
+          <p class="mt-2 text-sm leading-7 text-slate-600" data-i18n="trust1Desc">تجربة سريعة وخفيفة تناسب الاستخدام من الهاتف داخل المزرعة.</p>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-primary" data-i18n="trust2Title">توصيات قابلة للتنفيذ</p>
+          <p class="mt-2 text-sm leading-7 text-slate-600" data-i18n="trust2Desc">النتيجة لا تتوقف عند التشخيص، بل تتحول إلى خطوات عملية واضحة.</p>
+        </div>
+        <div>
+          <p class="text-sm font-semibold text-primary" data-i18n="trust3Title">جاهز للتوسع</p>
+          <p class="mt-2 text-sm leading-7 text-slate-600" data-i18n="trust3Desc">ابدأ مجاناً ثم انتقل إلى باقات أكبر مع نمو احتياجاتك الزراعية.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <span class="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-primary" data-i18n="featuresBadge">المزايا الأساسية</span>
+        <h2 class="mt-4 text-3xl font-black text-slate-900 sm:text-4xl" data-i18n="featuresTitle">كل ما يحتاجه المزارع في منصة واحدة</h2>
+        <p class="mt-4 text-lg leading-8 text-slate-600" data-i18n="featuresDesc">صممنا NabtahAI لتبسيط القرار الزراعي، من التشخيص الأولي إلى التوصيات الذكية والمتابعة المستمرة.</p>
+      </div>
+      <div class="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-soft">
+          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl">🌿</div>
+          <h3 class="text-xl font-bold text-slate-900" data-i18n="feature1Title">تشخيص الأمراض بالصور</h3>
+          <p class="mt-3 leading-7 text-slate-600" data-i18n="feature1Desc">ارفع صورة النبات لتحصل على تحليل ذكي سريع للحالة المحتملة مع نسبة ثقة وتوصيات أولية واضحة.</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-soft">
+          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl">📡</div>
+          <h3 class="text-xl font-bold text-slate-900" data-i18n="feature2Title">أداء محسّن للاتصال الضعيف</h3>
+          <p class="mt-3 leading-7 text-slate-600" data-i18n="feature2Desc">واجهة خفيفة وسريعة تعمل بكفاءة حتى عند ضعف الإنترنت، لتخدم المزارع في الحقول والمناطق البعيدة.</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-soft">
+          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl">📊</div>
+          <h3 class="text-xl font-bold text-slate-900" data-i18n="feature3Title">رؤى وتوصيات عملية</h3>
+          <p class="mt-3 leading-7 text-slate-600" data-i18n="feature3Desc">احصل على اقتراحات قابلة للتنفيذ حول الري، الوقاية، والعلاج وفقاً لنوع المحصول والظروف المحيطة.</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 p-6 shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-soft">
+          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-2xl">🔗</div>
+          <h3 class="text-xl font-bold text-slate-900" data-i18n="feature4Title">تكامل مع الأجهزة الذكية</h3>
+          <p class="mt-3 leading-7 text-slate-600" data-i18n="feature4Desc">قابلية الربط مع الحساسات والأنظمة الزراعية الحديثة لتجميع البيانات واتخاذ قرارات أدق بمرور الوقت.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="bg-cream py-16 lg:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-primary" data-i18n="howBadge">كيف تعمل المنصة</span>
+          <h2 class="mt-4 text-3xl font-black text-slate-900 sm:text-4xl" data-i18n="howTitle">3 خطوات بسيطة للبدء</h2>
+        </div>
+        <div class="mt-14 grid gap-6 md:grid-cols-3">
+          <div class="rounded-3xl bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-xl font-black text-white">1</div>
+            <h3 class="mt-6 text-2xl font-bold text-slate-900" data-i18n="step1Title">ارفع صورة أو أدخل الحالة</h3>
+            <p class="mt-3 leading-7 text-slate-600" data-i18n="step1Desc">قم بتصوير النبات أو كتابة الأعراض التي تلاحظها، وسيبدأ النظام في تحليل البيانات فوراً.</p>
+          </div>
+          <div class="rounded-3xl bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-xl font-black text-white">2</div>
+            <h3 class="mt-6 text-2xl font-bold text-slate-900" data-i18n="step2Title">يتولى الذكاء الاصطناعي التحليل</h3>
+            <p class="mt-3 leading-7 text-slate-600" data-i18n="step2Desc">تتم مقارنة المدخلات بنماذج زراعية متخصصة لتحديد المرض أو المشكلة الأكثر احتمالاً بسرعة ودقة.</p>
+          </div>
+          <div class="rounded-3xl bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-xl font-black text-white">3</div>
+            <h3 class="mt-6 text-2xl font-bold text-slate-900" data-i18n="step3Title">استلم التوصية واتخذ الإجراء</h3>
+            <p class="mt-3 leading-7 text-slate-600" data-i18n="step3Desc">تحصل على تشخيص واضح، درجة الثقة، وخطة عمل عملية تساعدك على حماية المحصول وتقليل الخسائر.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <span class="rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-700" data-i18n="pricingBadge">الباقات والأسعار</span>
+        <h2 class="mt-4 text-3xl font-black text-slate-900 sm:text-4xl" data-i18n="pricingTitle">اختر الباقة المناسبة لنموك الزراعي</h2>
+        <p class="mt-4 text-lg leading-8 text-slate-600" data-i18n="pricingDesc">باقات مرنة تناسب المزارع الفردي، المزرعة المتنامية، والجهات الزراعية الكبيرة.</p>
+      </div>
+      <div class="mt-14 grid gap-8 lg:grid-cols-4">
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+          <div class="mb-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700" data-i18n="freemiumBadge">مجاني</div>
+          <h3 class="text-2xl font-black text-slate-900">Freemium</h3>
+          <p class="mt-3 text-slate-600" data-i18n="freemiumDesc">ابدأ مجاناً لتجربة المنصة قبل الترقية.</p>
+          <div class="mt-6 flex items-end gap-2">
+            <span class="text-5xl font-black text-primary">$0</span>
+            <span class="pb-2 text-slate-500" data-i18n="perMonth">/ شهرياً</span>
+          </div>
+          <ul class="mt-8 space-y-4 text-slate-600">
+            <li data-i18n="freemium1">3 فحوصات شهرياً</li>
+            <li data-i18n="freemium2">تشخيص أساسي بالصور</li>
+            <li data-i18n="freemium3">توصيات أولية سريعة</li>
+            <li data-i18n="freemium4">مثالي للتجربة الأولى</li>
+          </ul>
+          <a href="#waitlist" class="mt-8 block rounded-full border border-slate-300 px-6 py-3 text-center font-bold text-slate-700 transition hover:border-primary hover:text-primary" data-i18n="freemiumCta">جرّب مجاناً</a>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+          <h3 class="text-2xl font-black text-slate-900">Starter Tier</h3>
+          <p class="mt-3 text-slate-600" data-i18n="starterDesc">للمزارعين الأفراد والبدايات الذكية.</p>
+          <div class="mt-6 flex items-end gap-2">
+            <span class="text-5xl font-black text-primary">$9</span>
+            <span class="pb-2 text-slate-500" data-i18n="perMonth">/ شهرياً</span>
+          </div>
+          <ul class="mt-8 space-y-4 text-slate-600">
+            <li data-i18n="starter1">تحليلات شهرية محدودة بالصور</li>
+            <li data-i18n="starter2">تشخيص أولي للمشكلات الشائعة</li>
+            <li data-i18n="starter3">توصيات أساسية للعناية بالمحصول</li>
+            <li data-i18n="starter4">دعم عبر البريد الإلكتروني</li>
+          </ul>
+          <a href="#waitlist" class="mt-8 block rounded-full border border-slate-300 px-6 py-3 text-center font-bold text-slate-700 transition hover:border-primary hover:text-primary" data-i18n="starterCta">ابدأ الآن</a>
+        </div>
+
+        <div class="relative rounded-3xl border-2 border-primary bg-primary p-8 text-white shadow-glow transition duration-300 hover:-translate-y-1">
+          <div class="absolute -top-4 right-6 rounded-full bg-amber-400 px-4 py-1.5 text-sm font-black text-slate-900" data-i18n="mostPopular">Most Popular / الأكثر شعبية</div>
+          <h3 class="text-2xl font-black">Growth Tier</h3>
+          <p class="mt-3 text-green-100" data-i18n="growthDesc">للمزارع النامية التي تحتاج رؤى أعمق ومتابعة مستمرة.</p>
+          <div class="mt-6 flex items-end gap-2">
+            <span class="text-5xl font-black">$29</span>
+            <span class="pb-2 text-green-100" data-i18n="perMonth">/ شهرياً</span>
+          </div>
+          <ul class="mt-8 space-y-4 text-green-50">
+            <li data-i18n="growth1">عدد أكبر من التحليلات شهرياً</li>
+            <li data-i18n="growth2">تقارير ذكية وتوصيات موسمية</li>
+            <li data-i18n="growth3">أولوية في سرعة المعالجة</li>
+            <li data-i18n="growth4">دعم أسرع وقنوات تواصل مباشرة</li>
+          </ul>
+          <a href="#waitlist" class="mt-8 block rounded-full bg-white px-6 py-3 text-center font-bold text-primary transition hover:bg-green-50" data-i18n="growthCta">احجز مكانك</a>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+          <h3 class="text-2xl font-black text-slate-900">Enterprise Tier</h3>
+          <p class="mt-3 text-slate-600" data-i18n="enterpriseDesc">للشركات، التعاونيات، والمشاريع الزراعية الكبرى.</p>
+          <div class="mt-6 flex items-end gap-2">
+            <span class="text-5xl font-black text-primary" data-i18n="customLabel">Custom</span>
+          </div>
+          <ul class="mt-8 space-y-4 text-slate-600">
+            <li data-i18n="enterprise1">تحليلات غير محدودة تقريباً</li>
+            <li data-i18n="enterprise2">تكامل مع أجهزة استشعار وأنظمة خارجية</li>
+            <li data-i18n="enterprise3">لوحات تحكم وتقارير مخصصة</li>
+            <li data-i18n="enterprise4">مدير حساب ودعم مؤسسي</li>
+          </ul>
+          <a href="#waitlist" class="mt-8 block rounded-full border border-slate-300 px-6 py-3 text-center font-bold text-slate-700 transition hover:border-primary hover:text-primary" data-i18n="enterpriseCta">تواصل معنا</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="bg-slate-950 py-16 text-white lg:py-24">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold text-green-300" data-i18n="testimonialsBadge">آراء أولية</span>
+          <h2 class="mt-4 text-3xl font-black sm:text-4xl" data-i18n="testimonialsTitle">انطباع قوي من أول تجربة</h2>
+          <p class="mt-4 text-lg leading-8 text-slate-300" data-i18n="testimonialsDesc">رسائل تسويقية أقوى تبدأ عندما يشعر العميل أن المنتج يفهم مشكلته الحقيقية ويختصر عليه الوقت والخسارة.</p>
+        </div>
+        <div class="mt-12 grid gap-6 lg:grid-cols-3">
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-8">
+            <p class="text-lg leading-8 text-slate-200" data-i18n="testimonial1">"المنصة أعطتنا تصوراً أسرع للحالة بدل التأخير في اتخاذ القرار داخل الحقل."</p>
+            <div class="mt-6">
+              <p class="font-bold" data-i18n="testimonial1Name">مزارع خضروات</p>
+              <p class="text-sm text-slate-400" data-i18n="testimonial1Role">صنعاء</p>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-8">
+            <p class="text-lg leading-8 text-slate-200" data-i18n="testimonial2">"أكثر ما أعجبني أن التوصية عملية ومباشرة، وليس فقط اسم مرض بدون فائدة."</p>
+            <div class="mt-6">
+              <p class="font-bold" data-i18n="testimonial2Name">مهندس زراعي</p>
+              <p class="text-sm text-slate-400" data-i18n="testimonial2Role">مستخدم تجريبي</p>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-8">
+            <p class="text-lg leading-8 text-slate-200" data-i18n="testimonial3">"ميزة الباقة المجانية ممتازة لتجربة الخدمة قبل الاعتماد عليها على نطاق أوسع."</p>
+            <div class="mt-6">
+              <p class="font-bold" data-i18n="testimonial3Name">صاحب مزرعة ناشئة</p>
+              <p class="text-sm text-slate-400" data-i18n="testimonial3Role">مستخدم مبكر</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="bg-slate-50 py-16 lg:py-24">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-3xl text-center">
+          <span class="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-primary" data-i18n="faqBadge">الأسئلة الشائعة</span>
+          <h2 class="mt-4 text-3xl font-black text-slate-900 sm:text-4xl" data-i18n="faqTitle">إجابات سريعة لأسئلة المزارعين</h2>
+        </div>
+        <div class="mt-12 space-y-4">
+          <details class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-slate-900">
+              <span data-i18n="faq1q">ما مدى دقة التشخيص في NabtahAI؟</span>
+              <span class="text-2xl text-primary transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-4 leading-8 text-slate-600" data-i18n="faq1a">تعتمد الدقة على جودة الصورة وطبيعة الحالة، لكن المنصة مصممة لتقديم تشخيص أولي ذكي مدعوم بنسبة ثقة وتوصيات تساعدك على اتخاذ قرار أفضل بشكل أسرع.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-slate-900">
+              <span data-i18n="faq2q">هل تعمل المنصة مع الإنترنت البطيء؟</span>
+              <span class="text-2xl text-primary transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-4 leading-8 text-slate-600" data-i18n="faq2a">نعم، تم تصميم التجربة لتكون خفيفة وسريعة قدر الإمكان، مع تحسينات خاصة لتقليل استهلاك البيانات وتسريع رفع المعلومات حتى في البيئات محدودة الاتصال.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-slate-900">
+              <span data-i18n="faq3q">هل يمكن ربط NabtahAI بأجهزة ذكية أو حساسات؟</span>
+              <span class="text-2xl text-primary transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-4 leading-8 text-slate-600" data-i18n="faq3a">نعم، البنية العامة للمنصة تدعم التكامل مع الأجهزة الذكية والحساسات في الباقات المتقدمة، مما يتيح جمع بيانات إضافية وتحسين دقة التوصيات بمرور الوقت.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-slate-900">
+              <span data-i18n="faq4q">هل تغني المنصة عن الاستشارة الزراعية المتخصصة؟</span>
+              <span class="text-2xl text-primary transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mt-4 leading-8 text-slate-600" data-i18n="faq4a">المنصة أداة ذكية مساعدة لاتخاذ القرار بشكل أسرع وأكثر وضوحاً، لكنها تكون أكثر فاعلية عند استخدامها إلى جانب الخبرة الزراعية الميدانية في الحالات المعقدة أو الحساسة.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="waitlist" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-5xl overflow-hidden rounded-[36px] bg-gradient-to-br from-primary via-secondary to-green-500 p-8 text-white shadow-glow sm:p-12">
+        <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <span class="rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold" data-i18n="waitlistBadge">قائمة الانتظار</span>
+            <h2 class="mt-5 text-3xl font-black sm:text-4xl" data-i18n="waitlistTitle">كن من أوائل مستخدمي NabtahAI</h2>
+            <p class="mt-4 text-lg leading-8 text-green-50" data-i18n="waitlistDesc">سجّل بريدك الإلكتروني للحصول على وصول مبكر، تحديثات المنتج، وعروض الإطلاق الأولى.</p>
+            <div class="mt-6 flex flex-wrap gap-3 text-sm font-semibold text-white/90">
+              <span class="rounded-full bg-white/10 px-4 py-2" data-i18n="ctaChip1">وصول مبكر</span>
+              <span class="rounded-full bg-white/10 px-4 py-2" data-i18n="ctaChip2">أولوية في التحديثات</span>
+              <span class="rounded-full bg-white/10 px-4 py-2" data-i18n="ctaChip3">عروض الإطلاق</span>
+            </div>
+          </div>
+
+          <div class="rounded-3xl bg-white p-4 shadow-lg sm:p-5">
+            <form id="waitlistForm" class="waitlist-panel waitlist-panel-visible space-y-3">
+              <input id="emailInput" type="email" required placeholder="أدخل بريدك الإلكتروني" class="h-14 w-full rounded-2xl border border-slate-200 px-5 text-base text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-green-100" />
+              <button id="submitButton" type="submit" class="h-14 w-full rounded-2xl bg-primary px-8 text-base font-bold text-white transition hover:bg-slate-900" data-i18n="waitlistButton">انضم الآن</button>
+              <p class="text-center text-sm text-slate-500" data-i18n="waitlistNote">لن نرسل رسائل مزعجة. فقط تحديثات مهمة حول الإطلاق.</p>
+            </form>
+
+            <div id="successCard" class="waitlist-panel waitlist-panel-hidden rounded-3xl border border-green-100 bg-green-50 p-6 text-center">
+              <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-primary">✓</div>
+              <h3 class="mt-4 text-2xl font-black text-slate-900" data-i18n="successTitle">تم تسجيلك بنجاح</h3>
+              <p class="mt-3 leading-8 text-slate-600" data-i18n="successMessage">تم ارسال الطلب بنجاح، سيتم التواصل بك عبر البريد من قبل الفريق.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-slate-900 text-white">
+    <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-3 lg:px-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-lg font-black text-primary">ن</div>
+          <div>
+            <p class="text-lg font-extrabold">NabtahAI</p>
+            <p class="text-sm text-slate-400" data-i18n="brandSub">نبتة AI</p>
+          </div>
+        </div>
+        <p class="mt-5 max-w-sm leading-8 text-slate-300" data-i18n="footerAbout">منصة عربية للزراعة الذكية تمكّن المزارعين من تشخيص المحاصيل واتخاذ قرارات أسرع وأكثر دقة باستخدام الذكاء الاصطناعي.</p>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold" data-i18n="contactTitle">معلومات التواصل</h3>
+        <ul class="mt-5 space-y-3 text-slate-300">
+          <li><span class="font-semibold text-white">Email:</span> ceo@nabtah-ai.app</li>
+          <li><span class="font-semibold text-white">Phone:</span> +967 781028068</li>
+          <li><span class="font-semibold text-white">Address:</span> Sana'a, Yemen</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold" data-i18n="quickLinksTitle">روابط سريعة</h3>
+        <ul class="mt-5 space-y-3 text-slate-300">
+          <li><a href="#features" class="transition hover:text-white" data-i18n="navFeatures">المزايا</a></li>
+          <li><a href="#pricing" class="transition hover:text-white" data-i18n="navPricing">الباقات</a></li>
+          <li><a href="#testimonials" class="transition hover:text-white" data-i18n="navTestimonials">الآراء</a></li>
+          <li><a href="#faq" class="transition hover:text-white" data-i18n="navFaq">الأسئلة الشائعة</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 px-4 py-5 text-center text-sm text-slate-400 sm:px-6 lg:px-8" data-i18n="copyright">© 2026 جميع الحقوق محفوظة لشركة نبتة إيه آي المحدودة.</div>
+  </footer>
+
+  <script>
+    const translations = {
+      ar: {
+        brandSub: 'نبتة AI',
+        navFeatures: 'المزايا',
+        navHow: 'كيف تعمل',
+        navPricing: 'الباقات',
+        navTestimonials: 'الآراء',
+        navFaq: 'الأسئلة الشائعة',
+        joinWaitlist: 'انضم لقائمة الانتظار',
+        heroBadge: 'الزراعة الذكية تبدأ من قرار أدق',
+        heroTitle: 'مساعدك الزراعي الذكي لتشخيص المحاصيل واتخاذ القرار بثقة',
+        heroDesc: 'منصة عربية مدعومة بالذكاء الاصطناعي تساعد المزارعين والمهندسين الزراعيين على اكتشاف أمراض النباتات، تحليل الصور، وتقديم توصيات عملية بسرعة حتى في البيئات ذات الاتصال المحدود.',
+        heroChip1: 'تشخيص أسرع',
+        heroChip2: 'قرارات أدق',
+        heroChip3: 'تكلفة أقل للخسائر',
+        heroPrimary: 'اطلب وصولاً مبكراً',
+        heroSecondary: 'استعرض الباقات',
+        stat1: 'دقة متوقعة في تحليل الحالات الشائعة',
+        stat2: 'مساعدة مستمرة للمزارع في أي وقت',
+        stat3Title: 'عربي',
+        stat3: 'واجهة وتجربة مصممة لسياق المنطقة',
+        panelLabel: 'لوحة التحليل الذكي',
+        panelTitle: 'تشخيص سريع للمحصول',
+        panelStatus: 'نشط الآن',
+        plantTypeLabel: 'نوع النبات',
+        plantTypeValue: 'طماطم',
+        diseaseLabel: 'الحالة المكتشفة',
+        diseaseValue: 'تبقع مبكر',
+        recommendationLabel: 'التوصية',
+        recommendationValue: 'عزل الأوراق المتضررة، تقليل الري المسائي، ومتابعة برنامج علاج مخصص بناءً على شدة الإصابة وموقع المزرعة.',
+        confidenceLabel: 'مؤشر الثقة',
+        responseTimeLabel: 'زمن الاستجابة',
+        responseTimeValue: 'أقل من 30 ثانية',
+        roiLabel: 'الأثر المتوقع',
+        roiValue: 'تقليل تأخر القرار الزراعي ورفع سرعة الاستجابة الميدانية.',
+        trust1Title: 'مصمم للحقول الواقعية',
+        trust1Desc: 'تجربة سريعة وخفيفة تناسب الاستخدام من الهاتف داخل المزرعة.',
+        trust2Title: 'توصيات قابلة للتنفيذ',
+        trust2Desc: 'النتيجة لا تتوقف عند التشخيص، بل تتحول إلى خطوات عملية واضحة.',
+        trust3Title: 'جاهز للتوسع',
+        trust3Desc: 'ابدأ مجاناً ثم انتقل إلى باقات أكبر مع نمو احتياجاتك الزراعية.',
+        featuresBadge: 'المزايا الأساسية',
+        featuresTitle: 'كل ما يحتاجه المزارع في منصة واحدة',
+        featuresDesc: 'صممنا NabtahAI لتبسيط القرار الزراعي، من التشخيص الأولي إلى التوصيات الذكية والمتابعة المستمرة.',
+        feature1Title: 'تشخيص الأمراض بالصور',
+        feature1Desc: 'ارفع صورة النبات لتحصل على تحليل ذكي سريع للحالة المحتملة مع نسبة ثقة وتوصيات أولية واضحة.',
+        feature2Title: 'أداء محسّن للاتصال الضعيف',
+        feature2Desc: 'واجهة خفيفة وسريعة تعمل بكفاءة حتى عند ضعف الإنترنت، لتخدم المزارع في الحقول والمناطق البعيدة.',
+        feature3Title: 'رؤى وتوصيات عملية',
+        feature3Desc: 'احصل على اقتراحات قابلة للتنفيذ حول الري، الوقاية، والعلاج وفقاً لنوع المحصول والظروف المحيطة.',
+        feature4Title: 'تكامل مع الأجهزة الذكية',
+        feature4Desc: 'قابلية الربط مع الحساسات والأنظمة الزراعية الحديثة لتجميع البيانات واتخاذ قرارات أدق بمرور الوقت.',
+        howBadge: 'كيف تعمل المنصة',
+        howTitle: '3 خطوات بسيطة للبدء',
+        step1Title: 'ارفع صورة أو أدخل الحالة',
+        step1Desc: 'قم بتصوير النبات أو كتابة الأعراض التي تلاحظها، وسيبدأ النظام في تحليل البيانات فوراً.',
+        step2Title: 'يتولى الذكاء الاصطناعي التحليل',
+        step2Desc: 'تتم مقارنة المدخلات بنماذج زراعية متخصصة لتحديد المرض أو المشكلة الأكثر احتمالاً بسرعة ودقة.',
+        step3Title: 'استلم التوصية واتخذ الإجراء',
+        step3Desc: 'تحصل على تشخيص واضح، درجة الثقة، وخطة عمل عملية تساعدك على حماية المحصول وتقليل الخسائر.',
+        pricingBadge: 'الباقات والأسعار',
+        pricingTitle: 'اختر الباقة المناسبة لنموك الزراعي',
+        pricingDesc: 'باقات مرنة تناسب المزارع الفردي، المزرعة المتنامية، والجهات الزراعية الكبيرة.',
+        freemiumBadge: 'مجاني',
+        freemiumDesc: 'ابدأ مجاناً لتجربة المنصة قبل الترقية.',
+        freemium1: '3 فحوصات شهرياً',
+        freemium2: 'تشخيص أساسي بالصور',
+        freemium3: 'توصيات أولية سريعة',
+        freemium4: 'مثالي للتجربة الأولى',
+        freemiumCta: 'جرّب مجاناً',
+        starterDesc: 'للمزارعين الأفراد والبدايات الذكية.',
+        perMonth: '/ شهرياً',
+        starter1: 'تحليلات شهرية محدودة بالصور',
+        starter2: 'تشخيص أولي للمشكلات الشائعة',
+        starter3: 'توصيات أساسية للعناية بالمحصول',
+        starter4: 'دعم عبر البريد الإلكتروني',
+        starterCta: 'ابدأ الآن',
+        mostPopular: 'Most Popular / الأكثر شعبية',
+        growthDesc: 'للمزارع النامية التي تحتاج رؤى أعمق ومتابعة مستمرة.',
+        growth1: 'عدد أكبر من التحليلات شهرياً',
+        growth2: 'تقارير ذكية وتوصيات موسمية',
+        growth3: 'أولوية في سرعة المعالجة',
+        growth4: 'دعم أسرع وقنوات تواصل مباشرة',
+        growthCta: 'احجز مكانك',
+        enterpriseDesc: 'للشركات، التعاونيات، والمشاريع الزراعية الكبرى.',
+        customLabel: 'Custom',
+        enterprise1: 'تحليلات غير محدودة تقريباً',
+        enterprise2: 'تكامل مع أجهزة استشعار وأنظمة خارجية',
+        enterprise3: 'لوحات تحكم وتقارير مخصصة',
+        enterprise4: 'مدير حساب ودعم مؤسسي',
+        enterpriseCta: 'تواصل معنا',
+        testimonialsBadge: 'آراء أولية',
+        testimonialsTitle: 'انطباع قوي من أول تجربة',
+        testimonialsDesc: 'رسائل تسويقية أقوى تبدأ عندما يشعر العميل أن المنتج يفهم مشكلته الحقيقية ويختصر عليه الوقت والخسارة.',
+        testimonial1: '"المنصة أعطتنا تصوراً أسرع للحالة بدل التأخير في اتخاذ القرار داخل الحقل."',
+        testimonial1Name: 'مزارع خضروات',
+        testimonial1Role: 'صنعاء',
+        testimonial2: '"أكثر ما أعجبني أن التوصية عملية ومباشرة، وليس فقط اسم مرض بدون فائدة."',
+        testimonial2Name: 'مهندس زراعي',
+        testimonial2Role: 'مستخدم تجريبي',
+        testimonial3: '"ميزة الباقة المجانية ممتازة لتجربة الخدمة قبل الاعتماد عليها على نطاق أوسع."',
+        testimonial3Name: 'صاحب مزرعة ناشئة',
+        testimonial3Role: 'مستخدم مبكر',
+        faqBadge: 'الأسئلة الشائعة',
+        faqTitle: 'إجابات سريعة لأسئلة المزارعين',
+        faq1q: 'ما مدى دقة التشخيص في NabtahAI؟',
+        faq1a: 'تعتمد الدقة على جودة الصورة وطبيعة الحالة، لكن المنصة مصممة لتقديم تشخيص أولي ذكي مدعوم بنسبة ثقة وتوصيات تساعدك على اتخاذ قرار أفضل بشكل أسرع.',
+        faq2q: 'هل تعمل المنصة مع الإنترنت البطيء؟',
+        faq2a: 'نعم، تم تصميم التجربة لتكون خفيفة وسريعة قدر الإمكان، مع تحسينات خاصة لتقليل استهلاك البيانات وتسريع رفع المعلومات حتى في البيئات محدودة الاتصال.',
+        faq3q: 'هل يمكن ربط NabtahAI بأجهزة ذكية أو حساسات؟',
+        faq3a: 'نعم، البنية العامة للمنصة تدعم التكامل مع الأجهزة الذكية والحساسات في الباقات المتقدمة، مما يتيح جمع بيانات إضافية وتحسين دقة التوصيات بمرور الوقت.',
+        faq4q: 'هل تغني المنصة عن الاستشارة الزراعية المتخصصة؟',
+        faq4a: 'المنصة أداة ذكية مساعدة لاتخاذ القرار بشكل أسرع وأكثر وضوحاً، لكنها تكون أكثر فاعلية عند استخدامها إلى جانب الخبرة الزراعية الميدانية في الحالات المعقدة أو الحساسة.',
+        waitlistBadge: 'قائمة الانتظار',
+        waitlistTitle: 'كن من أوائل مستخدمي NabtahAI',
+        waitlistDesc: 'سجّل بريدك الإلكتروني للحصول على وصول مبكر، تحديثات المنتج، وعروض الإطلاق الأولى.',
+        ctaChip1: 'وصول مبكر',
+        ctaChip2: 'أولوية في التحديثات',
+        ctaChip3: 'عروض الإطلاق',
+        waitlistButton: 'انضم الآن',
+        waitlistNote: 'لن نرسل رسائل مزعجة. فقط تحديثات مهمة حول الإطلاق.',
+        waitlistPlaceholder: 'أدخل بريدك الإلكتروني',
+        successTitle: 'تم ارسال الطلب بنجاح',
+        successMessage: 'سيتم التواصل بك عبر البريد من قبل الفريق.',
+        footerAbout: 'منصة عربية للزراعة الذكية تمكّن المزارعين من تشخيص المحاصيل واتخاذ قرارات أسرع وأكثر دقة باستخدام الذكاء الاصطناعي.',
+        contactTitle: 'معلومات التواصل',
+        quickLinksTitle: 'روابط سريعة',
+        copyright: '© 2026 جميع الحقوق محفوظة لشركة نبتة إيه آي المحدودة.'
+      },
+      en: {
+        brandSub: 'Smart Agriculture AI',
+        navFeatures: 'Features',
+        navHow: 'How It Works',
+        navPricing: 'Pricing',
+        navTestimonials: 'Testimonials',
+        navFaq: 'FAQ',
+        joinWaitlist: 'Join Waitlist',
+        heroBadge: 'Smarter farming starts with better decisions',
+        heroTitle: 'Your AI farming assistant for crop diagnosis and confident decisions',
+        heroDesc: 'An AI-powered platform that helps farmers and agricultural engineers detect plant diseases, analyze crop images, and receive practical recommendations quickly, even in low-connectivity environments.',
+        heroChip1: 'Faster diagnosis',
+        heroChip2: 'Sharper decisions',
+        heroChip3: 'Lower crop loss risk',
+        heroPrimary: 'Request Early Access',
+        heroSecondary: 'View Pricing',
+        stat1: 'Expected accuracy for common crop cases',
+        stat2: 'Continuous assistance for farmers anytime',
+        stat3Title: 'Bilingual',
+        stat3: 'An experience designed for regional agricultural needs',
+        panelLabel: 'AI Analysis Dashboard',
+        panelTitle: 'Fast crop diagnosis',
+        panelStatus: 'Live now',
+        plantTypeLabel: 'Plant type',
+        plantTypeValue: 'Tomato',
+        diseaseLabel: 'Detected issue',
+        diseaseValue: 'Early blight',
+        recommendationLabel: 'Recommendation',
+        recommendationValue: 'Isolate affected leaves, reduce evening irrigation, and follow a treatment plan based on infection severity and farm location.',
+        confidenceLabel: 'Confidence score',
+        responseTimeLabel: 'Response time',
+        responseTimeValue: 'Under 30 seconds',
+        roiLabel: 'Expected impact',
+        roiValue: 'Reduce decision delays and improve field response speed.',
+        trust1Title: 'Built for real fields',
+        trust1Desc: 'A lightweight experience designed for mobile use directly from the farm.',
+        trust2Title: 'Actionable recommendations',
+        trust2Desc: 'Results go beyond diagnosis and turn into clear next steps.',
+        trust3Title: 'Ready to scale',
+        trust3Desc: 'Start free, then upgrade as your agricultural needs grow.',
+        featuresBadge: 'Core Features',
+        featuresTitle: 'Everything a farmer needs in one platform',
+        featuresDesc: 'NabtahAI simplifies agricultural decision-making, from first diagnosis to smart recommendations and ongoing monitoring.',
+        feature1Title: 'Photo-based disease detection',
+        feature1Desc: 'Upload a plant image to get a fast AI analysis of the likely issue, along with a confidence score and clear first-step recommendations.',
+        feature2Title: 'Optimized for low internet speed',
+        feature2Desc: 'A lightweight and responsive experience designed to work efficiently even in remote fields with limited connectivity.',
+        feature3Title: 'Actionable insights',
+        feature3Desc: 'Receive practical suggestions for irrigation, prevention, and treatment based on crop type and surrounding conditions.',
+        feature4Title: 'Smart device integrations',
+        feature4Desc: 'Designed to integrate with sensors and modern agricultural systems for better long-term decision-making.',
+        howBadge: 'How the Platform Works',
+        howTitle: 'Get started in 3 simple steps',
+        step1Title: 'Upload a photo or describe the case',
+        step1Desc: 'Take a picture of the plant or enter the visible symptoms, and the system will begin analysis immediately.',
+        step2Title: 'AI handles the analysis',
+        step2Desc: 'Your input is matched against specialized agricultural models to identify the most likely disease or issue quickly and accurately.',
+        step3Title: 'Receive recommendations and act',
+        step3Desc: 'Get a clear diagnosis, confidence score, and practical action plan to protect your crops and reduce losses.',
+        pricingBadge: 'Plans & Pricing',
+        pricingTitle: 'Choose the right plan for your farm',
+        pricingDesc: 'Flexible pricing for individual farmers, growing farms, and large agricultural organizations.',
+        freemiumBadge: 'Free',
+        freemiumDesc: 'Start for free to try the platform before upgrading.',
+        freemium1: '3 diagnoses per month',
+        freemium2: 'Basic photo-based diagnosis',
+        freemium3: 'Quick first-step recommendations',
+        freemium4: 'Perfect for first-time users',
+        freemiumCta: 'Try for Free',
+        starterDesc: 'For individual farmers and early-stage adoption.',
+        perMonth: '/ month',
+        starter1: 'Limited monthly image analyses',
+        starter2: 'Initial diagnosis for common issues',
+        starter3: 'Essential crop care recommendations',
+        starter4: 'Email support',
+        starterCta: 'Get Started',
+        mostPopular: 'Most Popular',
+        growthDesc: 'For growing farms that need deeper insights and continuous monitoring.',
+        growth1: 'Higher monthly analysis limits',
+        growth2: 'Smart reports and seasonal recommendations',
+        growth3: 'Priority processing speed',
+        growth4: 'Faster support channels',
+        growthCta: 'Reserve Your Spot',
+        enterpriseDesc: 'For companies, cooperatives, and large-scale agricultural operations.',
+        customLabel: 'Custom',
+        enterprise1: 'Near-unlimited analyses',
+        enterprise2: 'External systems and sensor integrations',
+        enterprise3: 'Custom dashboards and reporting',
+        enterprise4: 'Dedicated account management and enterprise support',
+        enterpriseCta: 'Contact Us',
+        testimonialsBadge: 'Early Feedback',
+        testimonialsTitle: 'A strong impression from the first experience',
+        testimonialsDesc: 'Premium marketing becomes credible when the product clearly addresses real farmer pain points and saves time in the field.',
+        testimonial1: '"The platform gave us a faster view of the case instead of delaying action in the field."',
+        testimonial1Name: 'Vegetable Farmer',
+        testimonial1Role: 'Sana’a',
+        testimonial2: '"What I liked most is that the recommendation is practical and direct, not just a disease name with no action."',
+        testimonial2Name: 'Agricultural Engineer',
+        testimonial2Role: 'Pilot User',
+        testimonial3: '"The free plan is excellent for trying the service before depending on it at a larger scale."',
+        testimonial3Name: 'Emerging Farm Owner',
+        testimonial3Role: 'Early User',
+        faqBadge: 'Frequently Asked Questions',
+        faqTitle: 'Quick answers for farmers',
+        faq1q: 'How accurate is NabtahAI diagnosis?',
+        faq1a: 'Accuracy depends on image quality and case type, but the platform is designed to provide smart initial diagnosis with a confidence score and recommendations for faster decisions.',
+        faq2q: 'Does the platform work with slow internet?',
+        faq2a: 'Yes. The experience is optimized to stay lightweight and efficient, reducing data use and improving usability in low-bandwidth environments.',
+        faq3q: 'Can NabtahAI integrate with smart devices or sensors?',
+        faq3a: 'Yes. The platform is designed to support integrations with smart devices and field sensors, especially in advanced plans.',
+        faq4q: 'Does the platform replace expert agricultural consultation?',
+        faq4a: 'It is a smart decision-support tool that works best alongside field expertise, especially for complex or high-risk agricultural cases.',
+        waitlistBadge: 'Waitlist',
+        waitlistTitle: 'Be among the first to use NabtahAI',
+        waitlistDesc: 'Enter your email to get early access, product updates, and launch offers.',
+        ctaChip1: 'Early access',
+        ctaChip2: 'Priority updates',
+        ctaChip3: 'Launch offers',
+        waitlistButton: 'Join Now',
+        waitlistNote: 'No spam. Only important launch updates.',
+        waitlistPlaceholder: 'Enter your email address',
+        successTitle: 'Request submitted successfully',
+        successMessage: 'The team will contact you by email.',
+        footerAbout: 'An AI-powered agriculture platform helping farmers diagnose crops and make faster, more accurate decisions.',
+        contactTitle: 'Contact Info',
+        quickLinksTitle: 'Quick Links',
+        copyright: '© 2026 All rights reserved for Nabtah AI Ltd.'
+      }
+    };
+
+    const html = document.documentElement;
+    const toggle = document.getElementById('langToggle');
+    const emailInput = document.getElementById('emailInput');
+    const heroText = document.getElementById('heroText');
+    const waitlistForm = document.getElementById('waitlistForm');
+    const successCard = document.getElementById('successCard');
+
+    const waitlistState = {
+      submitted: false
+    };
+
+    function setWaitlistSuccessState(submitted) {
+      waitlistState.submitted = submitted;
+      if (submitted) {
+        waitlistForm.classList.remove('waitlist-panel-visible');
+        waitlistForm.classList.add('waitlist-panel-hidden');
+
+        successCard.classList.remove('waitlist-panel-hidden');
+        requestAnimationFrame(() => {
+          successCard.classList.add('waitlist-panel-visible');
+        });
+      } else {
+        successCard.classList.remove('waitlist-panel-visible');
+        successCard.classList.add('waitlist-panel-hidden');
+
+        waitlistForm.classList.remove('waitlist-panel-hidden');
+        requestAnimationFrame(() => {
+          waitlistForm.classList.add('waitlist-panel-visible');
+        });
+      }
+    }
+
+    function applyLanguage(lang) {
+      const content = translations[lang];
+      html.lang = lang;
+      html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      document.title = lang === 'ar' ? 'NabtahAI | نبتة AI' : 'NabtahAI | Smart Agriculture AI';
+      document.querySelector('meta[name="description"]').setAttribute('content', lang === 'ar'
+        ? 'نبتة AI منصة ذكية لمساعدة المزارعين على تشخيص أمراض النباتات، متابعة المحاصيل، واتخاذ قرارات زراعية أسرع وأكثر دقة.'
+        : 'NabtahAI is an AI platform that helps farmers diagnose plant diseases, monitor crops, and make faster, smarter agricultural decisions.');
+
+      document.querySelectorAll('[data-i18n]').forEach((element) => {
+        const key = element.getAttribute('data-i18n');
+        if (content[key]) element.textContent = content[key];
+      });
+
+      emailInput.placeholder = content.waitlistPlaceholder;
+      toggle.textContent = lang === 'ar' ? 'EN' : 'AR';
+      heroText.classList.toggle('lg:text-right', lang === 'ar');
+      heroText.classList.toggle('lg:text-left', lang === 'en');
+      localStorage.setItem('nabtah_lang', lang);
+    }
+
+    waitlistForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!emailInput.checkValidity()) {
+        emailInput.reportValidity();
+        return;
+      }
+      setWaitlistSuccessState(true);
+    });
+
+    toggle.addEventListener('click', () => {
+      applyLanguage(html.lang === 'ar' ? 'en' : 'ar');
+    });
+
+    applyLanguage(localStorage.getItem('nabtah_lang') === 'en' ? 'en' : 'ar');
+    setWaitlistSuccessState(false);
+  </script>
+</body>
+</html>
